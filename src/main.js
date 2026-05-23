@@ -12,6 +12,12 @@ const config = {
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
+    zoom: window.devicePixelRatio || 1,
+  },
+  render: {
+    antialias: true,
+    pixelArt: false,
+    roundPixels: false,
   },
   scene: [
     PreloadScene,
