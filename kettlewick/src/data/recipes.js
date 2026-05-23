@@ -1,0 +1,118 @@
+// ─────────────────────────────────────────────
+// KETTLEWICK — Recipe Definitions
+// discovered: true  = player knows this recipe
+// discovered: false = shows as ??? in book
+// hint: shown to player for undiscovered recipes
+// ─────────────────────────────────────────────
+
+export const RECIPES = {
+  quiet_fog: {
+    name: 'Remedy of Quiet Fog',
+    potionKey: 'potion_quiet_fog',
+    description: 'Eases a troubled mind. Sells well in autumn.',
+    ingredients: ['mugwort', 'foxglove', 'rivermoss'],
+    qualityBonus: { rare: 0.3 },   // +30% value if rare ingredient used
+    baseValue: 28,
+    brewTime: 80,                   // seconds
+    discovered: true,
+    season: null,                   // available all year
+  },
+  deep_warmth: {
+    name: 'Tincture of Deep Warmth',
+    potionKey: 'potion_deep_warmth',
+    description: 'For aching joints and cold mornings.',
+    ingredients: ['nettleroot', 'pineresin'],
+    baseValue: 22,
+    brewTime: 60,
+    discovered: true,
+    season: null,
+  },
+  sleep_draught: {
+    name: 'Sleep Draught',
+    potionKey: 'potion_sleep',
+    description: 'A deep, dreamless sleep in a bottle.',
+    ingredients: ['valerian', 'lavender', 'chamomile'],
+    baseValue: 38,
+    brewTime: 100,
+    discovered: false,
+    hint: 'Three calming herbs... something to quiet the night.',
+    season: null,
+  },
+  courage_tonic: {
+    name: 'Courage Tonic',
+    potionKey: 'potion_courage',
+    description: 'Liquid bravery. Handle with care.',
+    ingredients: ['stjohnswort', 'rosehip', 'pyrite'],
+    baseValue: 45,
+    brewTime: 120,
+    discovered: false,
+    hint: 'A bright herb, a red berry, and something that gleams.',
+    season: null,
+  },
+  shadow_salve: {
+    name: 'Shadow Salve',
+    potionKey: 'potion_shadow_salve',
+    description: 'Draws out poison and ill fortune.',
+    ingredients: ['wormwood', 'blacksalt', 'crowfeather'],
+    baseValue: 52,
+    brewTime: 140,
+    discovered: false,
+    hint: 'Dark things suit dark purposes.',
+    season: 'autumn',
+  },
+  clarity_elixir: {
+    name: 'Clarity Elixir',
+    potionKey: 'potion_clarity',
+    description: 'Sharpens the mind like a winter morning.',
+    ingredients: ['hyssop', 'smokyquartz', 'dewdrops'],
+    baseValue: 60,
+    brewTime: 150,
+    discovered: false,
+    hint: 'A blue herb, a crystal, and something fleeting.',
+    season: 'winter',
+  },
+  warmth_brew: {
+    name: 'Warmth Brew',
+    potionKey: 'potion_warmth_brew',
+    description: 'Chases the cold from bones and hearths alike.',
+    ingredients: ['honeycomb', 'beeswax', 'lemonbalm'],
+    baseValue: 34,
+    brewTime: 90,
+    discovered: false,
+    hint: 'Something from the hive, twice over.',
+    season: 'winter',
+  },
+  bitter_cure: {
+    name: 'Bitter Cure',
+    potionKey: 'potion_bitter_cure',
+    description: 'Tastes terrible. Works perfectly.',
+    ingredients: ['woad', 'betony', 'bogmoss'],
+    baseValue: 40,
+    brewTime: 110,
+    discovered: false,
+    hint: 'The most unpleasant combination imaginable.',
+    season: null,
+  },
+  bloom_essence: {
+    name: 'Bloom Essence',
+    potionKey: 'potion_bloom',
+    description: 'Carried by the village midwife every spring.',
+    ingredients: ['elderflower', 'meadowsweet', 'butterflywing'],
+    baseValue: 55,
+    brewTime: 130,
+    discovered: false,
+    hint: 'Two white flowers and something that once flew.',
+    season: 'spring',
+  },
+  dreamers_rest: {
+    name: "Dreamer's Rest",
+    potionKey: 'potion_dreamers_rest',
+    description: 'Sleep so deep you visit other worlds.',
+    ingredients: ['ghostfungus', 'moonwater', 'cobwebsilk'],
+    baseValue: 90,
+    brewTime: 200,
+    discovered: false,
+    hint: 'Only possible in the deep of winter.',
+    season: 'winter',
+  },
+};
