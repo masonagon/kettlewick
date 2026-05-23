@@ -3,15 +3,12 @@ import PreloadScene from './scenes/PreloadScene.js';
 import ShopScene from './scenes/ShopScene.js';
 import { ForageScene, BrewScene, VillageScene, RecipeScene } from './scenes/StubScenes.js';
 
-const DPR = Math.min(window.devicePixelRatio || 1, 2);
-
 const config = {
   type: Phaser.AUTO,
   width: 360,
   height: 640,
-  backgroundColor: '#2a1a0e',
+  transparent: true,
   parent: 'game-container',
-  resolution: DPR,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -19,7 +16,6 @@ const config = {
   render: {
     antialias: true,
     pixelArt: false,
-    roundPixels: false,
   },
   scene: [
     PreloadScene,
@@ -31,4 +27,5 @@ const config = {
   ],
 };
 
-new Phaser.Game(config);
+// Expose game globally so scenes can update the bg img
+window.KettlewickGame = new Phaser.Game(config);
