@@ -4,23 +4,16 @@ import { RECIPES } from '../data/recipes.js';
 import { setBg } from '../utils/setBg.js';
 
 export default class ShopScene extends Phaser.Scene {
-  constructor() {
-    super('ShopScene');
-  }
+  constructor() { super('ShopScene'); }
 
   create() {
     const { width, height } = this.scale;
     this.state = checkStreak(loadState());
     saveState(this.state);
-
-    // Set sharp HTML background
     setBg('assets/backgrounds/shop_bg.png');
 
-    // Parchment panel
     this.add.image(width / 2, height * 0.42, 'panel_scroll')
       .setDisplaySize(width * 0.92, height * 0.55);
-
-    // Shelf prop
     this.add.image(width / 2, height * 0.36, 'prop_shelf')
       .setDisplaySize(width * 0.82, height * 0.30);
 
@@ -35,15 +28,13 @@ export default class ShopScene extends Phaser.Scene {
     const recipes = Object.keys(shelf);
     const startX = width * 0.15;
     const spacing = (width * 0.7) / Math.max(recipes.length, 1);
-
     recipes.forEach((recipeKey, i) => {
       const recipe = RECIPES[recipeKey];
       if (!recipe) return;
       const x = startX + i * spacing;
       const y = height * 0.36;
       const img = this.add.image(x, y, recipe.potionKey)
-        .setDisplaySize(40, 56)
-        .setInteractive({ useHandCursor: true });
+        .setDisplaySize(40, 56).setInteractive({ useHandCursor: true });
       if (shelf[recipeKey] > 1) {
         this.add.text(x + 14, y - 24, `x${shelf[recipeKey]}`, {
           fontSize: '10px', color: '#f0d8b0',
@@ -66,7 +57,6 @@ export default class ShopScene extends Phaser.Scene {
 
   renderHUD() {
     const { width } = this.scale;
-
     this.add.rectangle(60, 28, 110, 36, 0x2a1a0e, 0.85).setOrigin(0.5);
     this.add.image(28, 28, 'hud_gold').setDisplaySize(100, 34);
     this.add.text(68, 28, `${this.state.gold}g`, {
@@ -92,11 +82,11 @@ export default class ShopScene extends Phaser.Scene {
   renderNav() {
     const { width, height } = this.scale;
     const tabs = [
-      { label: 'Shop',    scene: 'ShopScene',    active: true  },
-      { label: 'Forage',  scene: 'ForageScene',  active: false },
-      { label: 'Brew',    scene: 'BrewScene',    active: false },
-      { label: 'Village', scene: 'VillageScene', active: false },
-      { label: 'Recipes', scene: 'RecipeScene',  active: false },
+      { key: 'nav_shop',    label: 'Shop',    scene: 'ShopScene',    active: true  },
+      { key: 'nav_forage',  label: 'Forage',  scene: 'ForageScene',  active: false },
+      { key: 'nav_brew',    label: 'Brew',    scene: 'BrewScene',    active: false },
+      { key: 'nav_village', label: 'Village', scene: 'VillageScene', active: false },
+      { key: 'nav_recipe',  label: 'Recipes', scene: 'RecipeScene',  active: false },
     ];
 
     const tabWidth = width / tabs.length;
@@ -106,18 +96,17 @@ export default class ShopScene extends Phaser.Scene {
     tabs.forEach((tab, i) => {
       const x = tabWidth * i + tabWidth / 2;
       const y = height - 36;
-      if (tab.active) {
-        this.add.image(x, y, 'btn_parchment').setDisplaySize(tabWidth - 6, 58);
-        this.add.text(x, y, tab.label, {
-          fontSize: '12px', color: '#3a1a04', fontStyle: 'bold'
-        }).setOrigin(0.5);
-      } else {
-        this.add.text(x, y, tab.label, {
-          fontSize: '11px', color: '#c8a060'
-        }).setOrigin(0.5)
-          .setInteractive({ useHandCursor: true })
-          .on('pointerdown', () => this.scene.start(tab.scene));
-      }
+
+      const icon = this.add.image(x, y - 8, tab.key)
+        .setDisplaySize(44, 44)
+        .setAlpha(tab.active ? 1 : 0.5)
+        .setInteractive({ useHandCursor: !tab.active })
+        .on('pointerdown', () => { if (!tab.active) this.scene.start(tab.scene); });
+
+      this.add.text(x, y + 20, tab.label, {
+        fontSize: '9px',
+        color: tab.active ? '#e8c870' : '#7a5830'
+      }).setOrigin(0.5);
     });
   }
 }
