@@ -12,20 +12,19 @@ export default class ShopScene extends Phaser.Scene {
     this.state = checkStreak(loadState());
     saveState(this.state);
 
-    // ── Background ──
+    // 1. Background (bottom layer)
     this.add.image(width / 2, height / 2, 'bg_shop').setDisplaySize(width, height);
 
-    // ── Shop shelf ──
-    this.add.image(width / 2, height * 0.45, 'prop_shelf')
-      .setDisplaySize(width * 0.85, height * 0.38);
+    // 2. Shelf prop FIRST (behind parchment panel)
+    this.add.image(width / 2, height * 0.36, 'prop_shelf')
+      .setDisplaySize(width * 0.82, height * 0.30);
 
-    // ── Render potions on shelf ──
+    // 3. Parchment panel on top of shelf
+    this.add.image(width / 2, height * 0.50, 'panel_scroll')
+      .setDisplaySize(width * 0.92, height * 0.60);
+
     this.renderShelf();
-
-    // ── HUD ──
     this.renderHUD();
-
-    // ── Bottom nav ──
     this.renderNav();
   }
 
@@ -40,20 +39,16 @@ export default class ShopScene extends Phaser.Scene {
       const recipe = RECIPES[recipeKey];
       if (!recipe) return;
       const x = startX + i * spacing;
-      const y = height * 0.42;
-
+      const y = height * 0.36;
       const img = this.add.image(x, y, recipe.potionKey)
         .setDisplaySize(40, 56)
         .setInteractive({ useHandCursor: true });
-
-      // Count badge
       if (shelf[recipeKey] > 1) {
-        this.add.text(x + 14, y - 24, `×${shelf[recipeKey]}`, {
+        this.add.text(x + 14, y - 24, `x${shelf[recipeKey]}`, {
           fontSize: '10px', color: '#f0d8b0',
           backgroundColor: '#2a1a0e', padding: { x: 3, y: 1 }
         }).setOrigin(0.5);
       }
-
       img.on('pointerdown', () => this.sellPotion(recipeKey));
     });
   }
@@ -71,58 +66,67 @@ export default class ShopScene extends Phaser.Scene {
   renderHUD() {
     const { width } = this.scale;
 
-    // Gold
-    this.add.image(28, 28, 'icon_coin').setDisplaySize(22, 22);
-    this.add.text(42, 28, `${this.state.gold}g`, {
-      fontSize: '14px', color: '#e8d060', fontStyle: 'bold'
+    // Gold pill — fallback to dark rounded rect if asset missing
+    this.add.rectangle(60, 28, 110, 36, 0x2a1a0e, 0.85).setOrigin(0.5);
+    this.add.image(28, 28, 'hud_gold').setDisplaySize(100, 34).setVisible(true);
+    this.add.text(68, 28, `${this.state.gold}g`, {
+      fontSize: '13px', color: '#f5d44a', fontStyle: 'bold'
     }).setOrigin(0, 0.5);
 
-    // Streak
-    this.add.image(width - 60, 28, 'icon_flame').setDisplaySize(20, 20);
-    this.add.text(width - 46, 28, `${this.state.streakDays}`, {
-      fontSize: '14px', color: '#e85030', fontStyle: 'bold'
+    // Gem pill
+    this.add.rectangle(width - 60, 28, 100, 36, 0x2a1a0e, 0.85).setOrigin(0.5);
+    this.add.image(width - 52, 28, 'hud_gems').setDisplaySize(84, 34);
+    this.add.text(width - 38, 28, `0`, {
+      fontSize: '13px', color: '#c8a0ff', fontStyle: 'bold'
     }).setOrigin(0, 0.5);
 
-    // Season / day
+    // Streak bar — dark bg behind it so it's always visible
+    this.add.rectangle(width / 2, 60, 164, 22, 0x2a1a0e, 0.7).setOrigin(0.5);
+    this.add.image(width / 2, 60, 'bar_amber').setDisplaySize(160, 18);
+
+    // Season label
     const season = this.state.season.charAt(0).toUpperCase() + this.state.season.slice(1);
-    this.add.text(width / 2, 18, `${season} · Day ${this.state.day}`, {
-      fontSize: '11px', color: '#c8a060'
-    }).setOrigin(0.5, 0);
+    this.add.image(width / 2, 92, 'btn_parchment').setDisplaySize(180, 32);
+    this.add.text(width / 2, 92, `${season} - Day ${this.state.day}`, {
+      fontSize: '11px', color: '#3a1a04', fontStyle: 'bold'
+    }).setOrigin(0.5);
   }
 
   renderNav() {
     const { width, height } = this.scale;
     const tabs = [
-      { key: 'nav_shop',    label: 'Shop',    scene: 'ShopScene',    active: true  },
-      { key: 'nav_forage',  label: 'Forage',  scene: 'ForageScene',  active: false },
-      { key: 'nav_brew',    label: 'Brew',    scene: 'BrewScene',    active: false },
-      { key: 'nav_village', label: 'Village', scene: 'VillageScene', active: false },
-      { key: 'nav_recipe',  label: 'Recipes', scene: 'RecipeScene',  active: false },
+      { label: 'Shop',    scene: 'ShopScene',    active: true  },
+      { label: 'Forage',  scene: 'ForageScene',  active: false },
+      { label: 'Brew',    scene: 'BrewScene',    active: false },
+      { label: 'Village', scene: 'VillageScene', active: false },
+      { label: 'Recipes', scene: 'RecipeScene',  active: false },
     ];
 
     const tabWidth = width / tabs.length;
 
     // Nav background
-    this.add.rectangle(width / 2, height - 36, width, 72, 0x3a2010)
-      .setOrigin(0.5, 0.5);
-    this.add.rectangle(width / 2, height - 71, width, 1, 0x5a3018);
+    this.add.rectangle(width / 2, height - 36, width, 72, 0x2a1a0e).setOrigin(0.5);
+    // Top border line
+    this.add.rectangle(width / 2, height - 72, width, 2, 0xc8860a).setOrigin(0.5);
 
     tabs.forEach((tab, i) => {
       const x = tabWidth * i + tabWidth / 2;
       const y = height - 36;
-      const color = tab.active ? '#e8a830' : '#7a5830';
 
-      this.add.image(x, y - 10, tab.key)
-        .setDisplaySize(22, 22)
-        .setTint(tab.active ? 0xe8a830 : 0x7a5830)
-        .setInteractive({ useHandCursor: true })
-        .on('pointerdown', () => {
-          if (!tab.active) this.scene.start(tab.scene);
-        });
-
-      this.add.text(x, y + 8, tab.label, {
-        fontSize: '9px', color
-      }).setOrigin(0.5);
+      if (tab.active) {
+        // Active tab: parchment bg + dark text
+        this.add.image(x, y, 'btn_parchment').setDisplaySize(tabWidth - 6, 58);
+        this.add.text(x, y, tab.label, {
+          fontSize: '12px', color: '#3a1a04', fontStyle: 'bold'
+        }).setOrigin(0.5);
+      } else {
+        // Inactive tabs: gold text, no bg
+        this.add.text(x, y, tab.label, {
+          fontSize: '11px', color: '#c8a060'
+        }).setOrigin(0.5)
+          .setInteractive({ useHandCursor: true })
+          .on('pointerdown', () => this.scene.start(tab.scene));
+      }
     });
   }
 }
